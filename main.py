@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.router import api_router
+
+from api.routes.books import router as books_router
+
 from core.config import settings
 
 app = FastAPI()
@@ -15,7 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix=settings.API_PREFIX)
-
+app.include_router(books_router)
 
 @app.get("/healthcheck")
 async def health_check():
