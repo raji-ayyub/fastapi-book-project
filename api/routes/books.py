@@ -6,7 +6,8 @@ from fastapi.responses import JSONResponse
 from api.db.schemas import Book, Genre, InMemoryDB
 from fastapi import HTTPException
 
-router = APIRouter(prefix="/api/v1/books", tags=["books"])
+
+router = APIRouter(tags=["books"])  
 
 
 db = InMemoryDB()
