@@ -1,35 +1,30 @@
-# Use an official Python image as the base image
-FROM python:3.12 AS fastapi
+# Use multi-stage build
+FROM python:3.12 AS app
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy the dependencies file to the container
+# Copy dependencies and install
 COPY requirements.txt .
-
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the project files into the container
+# Copy application files
 COPY . .
 
-# Expose the port for FastAPI
+# Expose FastAPI port
 EXPOSE 8000
 
-# Command to run FastAPI
+# Start FastAPI
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
+# Stage 2: Nginx
+FROM nginx:latest
 
-# Use Nginx as a reverse proxy
-FROM nginx:latest AS nginx
+# Copy Nginx configuration files
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 
-# Remove default Nginx config
-RUN rm /etc/nginx/conf.d/default.conf
-
-# Copy custom Nginx config
-COPY nginx.conf /etc/nginx/conf.d/
-
-# Expose port 80
+# Expose Nginx port
 EXPOSE 80
 
 # Start Nginx
